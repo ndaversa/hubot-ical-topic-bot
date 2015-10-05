@@ -6,6 +6,7 @@
 # - moment
 # - cron
 # - ical
+# - fuzzy
 # - underscore
 #
 # Configuration:
@@ -24,6 +25,7 @@
 _ = require 'underscore'
 ical = require 'ical'
 moment = require 'moment'
+fuzzy = require 'fuzzy'
 cronJob = require("cron").CronJob
 
 module.exports = (robot) ->
@@ -31,18 +33,21 @@ module.exports = (robot) ->
   labels = JSON.parse process.env.HUBOT_ICAL_LABEL_CHANNEL_MAP
   cronTime = process.env.HUBOT_ICAL_CRON_UPDATE_INTERVAL || "15 * * * * 1-5"
   duplicateResolution = process.env.HUBOT_ICAL_DUPLICATE_RESOLVER || "OVERRIDE: "
-  topicRegex = "/(__LABEL__:(?:.*)\\s*\\|\\s*)?(.*)/i"
+  topicRegex = "/(__LABEL__:(?:[^|]*)\\s*\\|\\s*)?(.*)/i"
 
-  parseJSON = (response) ->
-    return response.json()
+  lookupUser = (name) ->
+    users = robot.brain.users()
+    users = _(users).keys().map (id) ->
+      user = users[id]
+      id: id
+      username: user.name
+      name: user.real_name || user.name
 
-  checkStatus = (response) ->
-    if response.status >= 200 and response.status < 300
-      return response
+    results = fuzzy.filter name, users, extract: (user) -> user.name
+    if results?.length is 1
+      return "@#{results[0].original.username}"
     else
-      error = new Error(response.statusText)
-      error.response = response
-      throw error
+      return name
 
   currentEvent = (room, cb) ->
     now = moment()
@@ -77,7 +82,7 @@ module.exports = (robot) ->
       [ __, summary, leftover ] = currentTopic.match regex
 
       if event
-        summary = event.summary
+        summary = lookupUser event.summary
       else
         format = "__TOPIC__"
 

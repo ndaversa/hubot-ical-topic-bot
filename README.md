@@ -6,6 +6,7 @@ Read an ical feed and prepend the current event to the channel topic
   * moment
   * cron
   * ical
+  * fuzzy
   * underscore
 
 ###Configuration
