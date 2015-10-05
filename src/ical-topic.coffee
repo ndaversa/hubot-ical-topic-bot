@@ -36,6 +36,7 @@ module.exports = (robot) ->
   topicRegex = "/(__LABEL__:(?:[^|]*)\\s*\\|\\s*)?(.*)/i"
 
   lookupUser = (name) ->
+    [ __, cleanName ] = name.match /([^|:\(]*)/i
     users = robot.brain.users()
     users = _(users).keys().map (id) ->
       user = users[id]
@@ -43,7 +44,7 @@ module.exports = (robot) ->
       username: user.name
       name: user.real_name || user.name
 
-    results = fuzzy.filter name, users, extract: (user) -> user.name
+    results = fuzzy.filter cleanName.trim(), users, extract: (user) -> user.name
     if results?.length is 1
       return "@#{results[0].original.username}"
     else
