@@ -14,7 +14,7 @@
 # HUBOT_ICAL_LABEL_CHANNEL_MAP `\{\"ops\":\"On\ duty\"\,\"engineering\":\"Oncall\"\}`
 # HUBOT_ICAL_DUPLICATE_RESOLVER - When finding multiple events for `now` use the presence of this string to help choose winner
 #    Note: Default value is `OVERRIDE: ` to handle calendars like VictorOps
-# HUBOT_ICAL_CRON_JOB - How often to check for updates in cron time, default `15 * * * * 1-5` which is every 15 mins Monday-Friday
+# HUBOT_ICAL_CRON_JOB - How often to check for updates in cron time, default `0 */15 * * * 1-5` which is every 15 mins Monday-Friday
 #
 # Commands:
 #  None
@@ -31,7 +31,7 @@ cronJob = require("cron").CronJob
 module.exports = (robot) ->
   calendars = JSON.parse process.env.HUBOT_ICAL_CHANNEL_MAP
   labels = JSON.parse process.env.HUBOT_ICAL_LABEL_CHANNEL_MAP
-  cronTime = process.env.HUBOT_ICAL_CRON_UPDATE_INTERVAL || "15 * * * * 1-5"
+  cronTime = process.env.HUBOT_ICAL_CRON_UPDATE_INTERVAL || "0 */15 * * * 1-5"
   duplicateResolution = process.env.HUBOT_ICAL_DUPLICATE_RESOLVER || "OVERRIDE: "
   topicRegex = "/(__LABEL__:(?:[^|]*)\\s*\\|\\s*)?(.*)/i"
 

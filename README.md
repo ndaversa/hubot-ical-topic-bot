@@ -14,7 +14,7 @@ Read an ical feed and prepend the current event to the channel topic
  - `HUBOT_ICAL_LABEL_CHANNEL_MAP` `\{\"ops\":\"On\ duty\"\,\"engineering\":\"Oncall\"\}`
  - `HUBOT_ICAL_DUPLICATE_RESOLVER` - When finding multiple events for `now` use the presence of this string to help choose winner
    Note: Default value is `OVERRIDE: ` to handle calendars like VictorOps
- - `HUBOT_ICAL_CRON_JOB` - How often to check for updates in cron time, default `15 * * * * 1-5` which is every 15 mins Monday-Friday
+ - `HUBOT_ICAL_CRON_JOB` - How often to check for updates in cron time, default `0 */15 * * * 1-5` which is every 15 mins Monday-Friday
 
 ###Commands
 None
