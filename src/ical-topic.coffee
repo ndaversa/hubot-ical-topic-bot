@@ -100,4 +100,5 @@ module.exports = (robot) ->
     for room of calendars
       updateTopicForRoom room
 
-  new cronJob(cronTime, updateTopics, null, true)
+  robot.brain.once 'loaded', ->
+    new cronJob(cronTime, updateTopics, null, true)
